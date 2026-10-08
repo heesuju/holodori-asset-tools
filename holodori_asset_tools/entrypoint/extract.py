@@ -63,6 +63,9 @@ class AssetBundle:
                 )
             else:
                 dest = dest.with_suffix(".json")
+                # Same-named objects (a Live2D motion's AnimationClip and its MonoBehaviour) both keep a file.
+                if dest in created:
+                    dest = dest.with_name(f"{dest.stem}.{obj.type.name}.json")
                 dest.write_text(
                     json.dumps(obj.read_typetree(), ensure_ascii=False),
                     encoding="utf-8",
