@@ -46,6 +46,12 @@ def main() -> int:
     p.add_argument("indir")
     p.add_argument("outdir")
 
+    p = sub.add_parser(
+        "live2d", help="convert extracted Live2D models to standard model3.json folders"
+    )
+    p.add_argument("indir")
+    p.add_argument("outdir")
+
     args = parser.parse_args()
     if args.command == "decrypt":
         from .entrypoint.decrypt import main as run
@@ -55,6 +61,8 @@ def main() -> int:
         from .entrypoint.download import main as run
     elif args.command == "extract":
         from .entrypoint.extract import main as run
+    elif args.command == "live2d":
+        from .entrypoint.live2d import main as run
     else:
         from .entrypoint.serve import main as run
     return run(args) or 0

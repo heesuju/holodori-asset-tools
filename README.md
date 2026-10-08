@@ -28,6 +28,7 @@ holodori serve [--host 127.0.0.1] [--port 8000]
 holodori decrypt ./in ./out
 holodori encrypt ./in ./out [--kind bundle|resource]
 holodori extract ./assets ./extracted
+holodori live2d ./extracted-live2d ./converted-live2d
 ```
 
 "Serving" the assets allows you to browse in browser the list of assets, and download any one you want.
@@ -47,6 +48,10 @@ their input.
 - Assetbundles (files inside are extracted)
 - ACB/AWB files (**note: some ACB files rely on a separate AWB file - to extract those both files need to be downloaded**)
 - USM files (*extracted as .ivf files, convert to mp4/mov with a converter like ffmpeg or online converter - TODO convert*)
+
+`live2d` converts extracted Live2D models (the `live2d_mdl_*` and `live2d_exp_*` folders) into standard
+Cubism folders any Cubism 3+ viewer can open: `<model>.model3.json`, `model.moc3`, `model.physics3.json`,
+`textures/` and `expressions/*.exp3.json` (each model gets its character's expressions).
 
 Octo keys and app versions are fetched from our repository [here](https://github.com/HolodoriDB/holodori-app-protos/tree/main).
 
