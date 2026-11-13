@@ -29,6 +29,7 @@ holodori decrypt ./in ./out
 holodori encrypt ./in ./out [--kind bundle|resource]
 holodori extract ./assets ./extracted
 holodori live2d ./extracted-live2d ./converted-live2d
+holodori models ./assets ./models-3d [--filter REGEX] [--link]
 ```
 
 "Serving" the assets allows you to browse in browser the list of assets, and download any one you want.
@@ -53,6 +54,14 @@ their input.
 into standard Cubism folders any Cubism 3+ viewer can open: `<model>.model3.json`, `model.moc3`,
 `model.physics3.json`, `textures/`, `expressions/*.exp3.json` (each model gets its character's expressions)
 and `motions/*.motion3.json` (the shared motions, decoded from Unity AnimationClips).
+
+`models` collects every 3D model as plain (decrypted) Unity bundles, ready for AssetStudio, AssetRipper
+or Unity, with nothing converted: `characters/<char>/` (body and hair bundles), `character-props/`,
+`props/`, `models/`, `scenes/`, `animations/` (every `mot_*` bundle) and `dependencies/` (shaders, ramp
+textures, effects... shared by the rest). `index.json` lists, per model, the bundles to load with it, and
+per character body its hair candidates. Motions are shared by all characters, and the 3D facial expressions
+live inside them (eye/brow/iris blendshape and mouth-decal curves). Body motions are Unity humanoid
+(muscle) clips; the game builds the humanoid Avatar at runtime, so no Avatar ships with the bodies.
 
 Octo keys and app versions are fetched from our repository [here](https://github.com/HolodoriDB/holodori-app-protos/tree/main).
 

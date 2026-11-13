@@ -52,6 +52,15 @@ def main() -> int:
     p.add_argument("indir")
     p.add_argument("outdir")
 
+    p = sub.add_parser(
+        "models", help="collect 3D model bundles with their animations and dependencies"
+    )
+    p.add_argument("indir")
+    p.add_argument("outdir")
+    p.add_argument("--catalog", default="octo_list.json")
+    p.add_argument("--filter", default=None, help="regex on model/animation bundle name")
+    p.add_argument("--link", action="store_true", help="hard-link instead of copying (same drive)")
+
     args = parser.parse_args()
     if args.command == "decrypt":
         from .entrypoint.decrypt import main as run
@@ -63,6 +72,8 @@ def main() -> int:
         from .entrypoint.extract import main as run
     elif args.command == "live2d":
         from .entrypoint.live2d import main as run
+    elif args.command == "models":
+        from .entrypoint.models import main as run
     else:
         from .entrypoint.serve import main as run
     return run(args) or 0
