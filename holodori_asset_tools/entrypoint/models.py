@@ -27,8 +27,10 @@ from .extract import UNITY_VERSION
 logger = getLogger("models")
 
 CHARACTER = re.compile(r"mdl_chr_drs_(\d+)-(.+)_(body|hair)")
-# (folder, pattern) in priority order; the first match wins.
+# (folder, pattern) in priority order; the first match wins. Hair is its own model folder: it is mounted
+# on bodies through `attach`, so viewers can leave it out of the browsable models.
 CATEGORIES = [
+    ("hair", re.compile(r"mdl_chr_drs_\d+-.+_hair")),
     ("characters", CHARACTER),
     ("character-props", re.compile(r"mdl_chr_(prp|acc)_.+")),
     ("props", re.compile(r"(fbx_mdl_env_parts|mdl_env_parts)_.+")),
@@ -57,8 +59,8 @@ ATTACH_RULES = (
 
 
 def rel_path(name: str, folder: str) -> str:
-    if folder == "characters":
-        return f"characters/{CHARACTER.fullmatch(name).group(1)}/{name}{EXT}"
+    if folder in ("characters", "hair"):
+        return f"{folder}/{CHARACTER.fullmatch(name).group(1)}/{name}{EXT}"
     return f"{folder}/{name}{EXT}"
 
 
@@ -188,9 +190,11 @@ def main(args: argparse.Namespace) -> int:
         needed = set(paths.values())
 
     for p in list(needed):
-        legacy = outdir / p.removesuffix(EXT)  # collected before files had an extension
-        if legacy.is_file() and not (outdir / p).exists():
-            legacy.rename(outdir / p)
+        # Earlier layouts: files without an extension, hair inside characters/<id>/.
+        for legacy in (outdir / p.removesuffix(EXT), outdir / ("characters/" + p.removeprefix("hair/"))):
+            if legacy != outdir / p and legacy.is_file() and not (outdir / p).exists():
+                (outdir / p).parent.mkdir(parents=True, exist_ok=True)
+                legacy.rename(outdir / p)
 
     by_path = {p: n for n, p in paths.items()}
     missing = []
