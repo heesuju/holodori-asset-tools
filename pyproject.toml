@@ -15,3 +15,6 @@ holodori = "holodori_asset_tools.__main__:main"
 
 [tool.setuptools.packages.find]
 include = ["holodori_asset_tools*"]
+
+[tool.setuptools.package-data]
+holodori_asset_tools = ["unity/*.cs"]

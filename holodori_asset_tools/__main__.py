@@ -59,7 +59,13 @@ def main() -> int:
     p.add_argument("outdir")
     p.add_argument("--catalog", default="octo_list.json")
     p.add_argument("--filter", default=None, help="regex on model/animation bundle name")
-    p.add_argument("--link", action="store_true", help="hard-link instead of copying (same drive)")
+
+    p = sub.add_parser(
+        "humanoid", help="build the humanoid Avatar and bake body motions with Unity, into a models collection"
+    )
+    p.add_argument("collection", help="folder made by `holodori models`")
+    p.add_argument("--unity", required=True, help="path to a Unity 6 editor's Unity.exe")
+    p.add_argument("--work", default="unity-humanoid", help="scratch folder for the Unity project and data")
 
     args = parser.parse_args()
     if args.command == "decrypt":
@@ -74,6 +80,8 @@ def main() -> int:
         from .entrypoint.live2d import main as run
     elif args.command == "models":
         from .entrypoint.models import main as run
+    elif args.command == "humanoid":
+        from .entrypoint.humanoid import main as run
     else:
         from .entrypoint.serve import main as run
     return run(args) or 0
